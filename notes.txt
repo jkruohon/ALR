@@ -1,0 +1,53 @@
+4 l‰ksy‰ jotka ARVOSTELLAAN ja muodostavat 2/3 arvosanasta.
+
+!!l‰ksyjen on oltava pdf-muodossa!!
+
+loppukoe u35 s113 3.5. muodostaa 1/3 arvosanasta.
+
+jos yhteispisteet v‰h. 50% kaikista niin l‰pi menee.  eli saamalla t‰ydet pisteet kotil‰ksyist‰ p‰‰see l‰pi helposti.
+
+perusregressiossa ordinary least squares (OLF).  logistisessa Likelihood Function.   ja Maximum Likelihood Estimation. 
+
+
+... tarkoittaa "jotenka"
+e kaavassa tarkoittaa expected.
+
+
+poisson ja cox ennustavat 0-1 v‰lill‰ liikkuvaa vastetta. ne ovat myˆs yleistettyj‰ lineaarisia malleja.
+
+LR:ss‰ ei selitt‰jien jakaumasta ole mit‰‰n olettamuksia (toisin kuin LDA:ssa ja joissain muissa)
+
+esim:  vaste Y, selitt‰j‰ A, kolmas muuttuja K.
+
+yleens‰ jos ep‰illeen confounderia niin se vakioidaan. (tosin regressiossahan t‰m‰ tapahtuu automaattisesti). tai sitten k‰ytet‰‰n verrokkiryhm‰‰.   jos K:n arvoa ei tiedet‰ tutkimusryhm‰ss‰ niin verrokkiryhm‰ss‰ se randomoidaan (jos ei voida vakioida).
+
+Main types of observational causal research:
+
+1.kohorttitutkimus. kohortti on ryhm‰ ihmisi‰ joista kaikki ovat altistuneet tekij‰lle X samaan aikaan.
+
+birth cohort people who were born in the same year.
+student cohort freshmen sophomores seniors etc.
+
+principle: follow the cohort, record exposures (?) and subsequent responses.
+
+
+case-control study:
+principle: select cases (of a particular illness), and for those controls who didnt become ill. then you find out about earlier exposures.
+
+bernoulli muuttuja on bin‰‰rinen.   
+
+E[y] = p*1  ˆˆˆˆˆˆˆˆˆˆ
+
+E[y^2] = p*1
+
+varianssi: p * 1-p.
+
+E[y1+y2] = E[y1] + E[y1]
+this same is not true for variance.
+var(y1+y2) = var(y1)+var(y2) vain jos y1 ja y2 ovat toisistaan riippuamttomia.
+
+covariance: y1*y2 = ohi
+
+Maximum Likelihood Estimation(MLI):
+likelihood function: ei pysty kirjottaa n‰ppiksel.  likelihood is the probability of the observed data.  likelihood function mittaa sen. what value of P maximizes the Maximum Likelihood?    log likelihood is the logarithm of the maximum likelihood. 
+
