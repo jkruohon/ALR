@@ -1,2 +1,2 @@
 # ALR
-Applied Logistic Regression
+Notes from the course Applied Logistic Regression
