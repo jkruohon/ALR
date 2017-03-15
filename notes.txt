@@ -51,3 +51,41 @@ covariance: y1*y2 = ohi
 Maximum Likelihood Estimation(MLI):
 likelihood function: ei pysty kirjottaa n‰ppiksel.  likelihood is the probability of the observed data.  likelihood function mittaa sen. what value of P maximizes the Maximum Likelihood?    log likelihood is the logarithm of the maximum likelihood. 
 
+biased vs unbiased MLE? vaikuttaa t‰rke‰lt‰.
+
+MLE:n varianssi on sama kaava kuin suhteellisen osuuden keskivirhe!
+
+SdErr = SD of p-hat.   estimaattorin (=estimaatin? otoksen?) keskihajontaa sanotaan keskivirheeksi jostain syyst‰.
+
+
+Z-value on siis observed - expected / keskivirhe. Z on tietysti normaalijakautunut. keskiarvo 0 ja hajonta 1. siksi se on niin kiva.
+
+20-30 kuulemma hyv‰ N.
+
+nyt t‰‰ll‰ n‰ytet‰‰n p:n luottamusv‰lin laskeminen. n‰yt‰‰ olevan tasan sama kaava kuin suhteellisen osuuden luottamusv‰lin laskeminen. 
+
+"these are the best models for these kinds of data."
+
+when using a model, always think about whether its assumptions are true.
+
+esim tautiEPIDEMIAN tapauksessa havainnot ei pakosti oo riippumattomia.
+
+nyky‰‰n k‰ytet‰‰n hypoteesin testauksen sijasta luottamusv‰lej‰.
+
+CI for p1-p0: huh jospa otamme kuvan.
+
+2x2 table (contingency) h‰n selitt‰‰ vapausasteet. jos reunajakaumat ovat vakiot niin vain yksi voi solu voi vaihdella. muiden arvot riippuvat suoraan siit‰.
+
+uurnamallissa otos tehd‰‰n PALAUTTAMATTA. ei ole buutstr‰ppi‰ t‰m‰.
+
+z toiseen on kuulemma sama kuin chi-squaren arvo vapausasteilla 1.
+
+muntel&henzel testiss‰ h0 on ett‰ kaikken solujen oddsratiot ovat samat. sitten arvioidaan.
+
+cochran muntel henzel test. X^2
+
+
+
+
+
+
