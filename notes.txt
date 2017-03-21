@@ -1,10 +1,10 @@
-4 l‰ksy‰ jotka ARVOSTELLAAN ja muodostavat 2/3 arvosanasta.
+4 l√§ksy√§ jotka ARVOSTELLAAN ja muodostavat 2/3 arvosanasta.
 
-!!l‰ksyjen on oltava pdf-muodossa!!
+!!l√§ksyjen on oltava pdf-muodossa!!
 
 loppukoe u35 s113 3.5. muodostaa 1/3 arvosanasta.
 
-jos yhteispisteet v‰h. 50% kaikista niin l‰pi menee.  eli saamalla t‰ydet pisteet kotil‰ksyist‰ p‰‰see l‰pi helposti.
+jos yhteispisteet v√§h. 50% kaikista niin l√§pi menee.  eli saamalla t√§ydet pisteet kotil√§ksyist√§ p√§√§see l√§pi helposti.
 
 perusregressiossa ordinary least squares (OLF).  logistisessa Likelihood Function.   ja Maximum Likelihood Estimation. 
 
@@ -13,17 +13,17 @@ perusregressiossa ordinary least squares (OLF).  logistisessa Likelihood Functio
 e kaavassa tarkoittaa expected.
 
 
-poisson ja cox ennustavat 0-1 v‰lill‰ liikkuvaa vastetta. ne ovat myˆs yleistettyj‰ lineaarisia malleja.
+poisson ja cox ennustavat 0-1 v√§lill√§ liikkuvaa vastetta. ne ovat my√∂s yleistettyj√§ lineaarisia malleja.
 
-LR:ss‰ ei selitt‰jien jakaumasta ole mit‰‰n olettamuksia (toisin kuin LDA:ssa ja joissain muissa)
+LR:ss√§ ei selitt√§jien jakaumasta ole mit√§√§n olettamuksia (toisin kuin LDA:ssa ja joissain muissa)
 
-esim:  vaste Y, selitt‰j‰ A, kolmas muuttuja K.
+esim:  vaste Y, selitt√§j√§ A, kolmas muuttuja K.
 
-yleens‰ jos ep‰illeen confounderia niin se vakioidaan. (tosin regressiossahan t‰m‰ tapahtuu automaattisesti). tai sitten k‰ytet‰‰n verrokkiryhm‰‰.   jos K:n arvoa ei tiedet‰ tutkimusryhm‰ss‰ niin verrokkiryhm‰ss‰ se randomoidaan (jos ei voida vakioida).
+yleens√§ jos ep√§illeen confounderia niin se vakioidaan. (tosin regressiossahan t√§m√§ tapahtuu automaattisesti). tai sitten k√§ytet√§√§n verrokkiryhm√§√§.   jos K:n arvoa ei tiedet√§ tutkimusryhm√§ss√§ niin verrokkiryhm√§ss√§ se randomoidaan (jos ei voida vakioida).
 
 Main types of observational causal research:
 
-1.kohorttitutkimus. kohortti on ryhm‰ ihmisi‰ joista kaikki ovat altistuneet tekij‰lle X samaan aikaan.
+1.kohorttitutkimus. kohortti on ryhm√§ ihmisi√§ joista kaikki ovat altistuneet tekij√§lle X samaan aikaan.
 
 birth cohort people who were born in the same year.
 student cohort freshmen sophomores seniors etc.
@@ -34,9 +34,9 @@ principle: follow the cohort, record exposures (?) and subsequent responses.
 case-control study:
 principle: select cases (of a particular illness), and for those controls who didnt become ill. then you find out about earlier exposures.
 
-bernoulli muuttuja on bin‰‰rinen.   
+bernoulli muuttuja on bin√§√§rinen.   
 
-E[y] = p*1  ˆˆˆˆˆˆˆˆˆˆ
+E[y] = p*1  √∂√∂√∂√∂√∂√∂√∂√∂√∂√∂
 
 E[y^2] = p*1
 
@@ -49,20 +49,20 @@ var(y1+y2) = var(y1)+var(y2) vain jos y1 ja y2 ovat toisistaan riippuamttomia.
 covariance: y1*y2 = ohi
 
 Maximum Likelihood Estimation(MLI):
-likelihood function: ei pysty kirjottaa n‰ppiksel.  likelihood is the probability of the observed data.  likelihood function mittaa sen. what value of P maximizes the Maximum Likelihood?    log likelihood is the logarithm of the maximum likelihood. 
+likelihood function: ei pysty kirjottaa n√§ppiksel.  likelihood is the probability of the observed data.  likelihood function mittaa sen. what value of P maximizes the Maximum Likelihood?    log likelihood is the logarithm of the maximum likelihood. 
 
-biased vs unbiased MLE? vaikuttaa t‰rke‰lt‰.
+biased vs unbiased MLE? vaikuttaa t√§rke√§lt√§.
 
 MLE:n varianssi on sama kaava kuin suhteellisen osuuden keskivirhe!
 
-SdErr = SD of p-hat.   estimaattorin (=estimaatin? otoksen?) keskihajontaa sanotaan keskivirheeksi jostain syyst‰.
+SdErr = SD of p-hat.   estimaattorin (=estimaatin? otoksen?) keskihajontaa sanotaan keskivirheeksi jostain syyst√§.
 
 
 Z-value on siis observed - expected / keskivirhe. Z on tietysti normaalijakautunut. keskiarvo 0 ja hajonta 1. siksi se on niin kiva.
 
-20-30 kuulemma hyv‰ N.
+20-30 kuulemma hyv√§ N.
 
-nyt t‰‰ll‰ n‰ytet‰‰n p:n luottamusv‰lin laskeminen. n‰yt‰‰ olevan tasan sama kaava kuin suhteellisen osuuden luottamusv‰lin laskeminen. 
+nyt t√§√§ll√§ n√§ytet√§√§n p:n luottamusv√§lin laskeminen. n√§yt√§√§ olevan tasan sama kaava kuin suhteellisen osuuden luottamusv√§lin laskeminen. 
 
 "these are the best models for these kinds of data."
 
@@ -70,19 +70,36 @@ when using a model, always think about whether its assumptions are true.
 
 esim tautiEPIDEMIAN tapauksessa havainnot ei pakosti oo riippumattomia.
 
-nyky‰‰n k‰ytet‰‰n hypoteesin testauksen sijasta luottamusv‰lej‰.
+nyky√§√§n k√§ytet√§√§n hypoteesin testauksen sijasta luottamusv√§lej√§.
 
 CI for p1-p0: huh jospa otamme kuvan.
 
-2x2 table (contingency) h‰n selitt‰‰ vapausasteet. jos reunajakaumat ovat vakiot niin vain yksi voi solu voi vaihdella. muiden arvot riippuvat suoraan siit‰.
+2x2 table (contingency) h√§n selitt√§√§ vapausasteet. jos reunajakaumat ovat vakiot niin vain yksi voi solu voi vaihdella. muiden arvot riippuvat suoraan siit√§.
 
-uurnamallissa otos tehd‰‰n PALAUTTAMATTA. ei ole buutstr‰ppi‰ t‰m‰.
+uurnamallissa otos tehd√§√§n PALAUTTAMATTA. ei ole buutstr√§ppi√§ t√§m√§.
 
 z toiseen on kuulemma sama kuin chi-squaren arvo vapausasteilla 1.
 
-muntel&henzel testiss‰ h0 on ett‰ kaikken solujen oddsratiot ovat samat. sitten arvioidaan.
+muntel&henzel testiss√§ h0 on ett√§ kaikken solujen oddsratiot ovat samat. sitten arvioidaan.
 
 cochran muntel henzel test. X^2
+
+tilastotieteess√§ ei kuulemma k√§ytet√§ muita logaritmeja kuin luonnollisia logaritmeja. kaikki logaritmit oletettavasti ovat neperin luvun logaritmeja.
+
+options(digits=2) k√§skee R:√§√§ OLETUSARVOISESTI k√§ytt√§m√§√§n vain kahta desimaalia laskutoimituksissa.
+
+element-wise operations!!!
+
+perus-R:n plotilla type="l"  piirt√§√§ VIIVAN!!!
+
+n√§iss√§ binomiaalijutuissa 3.84 on se t√§rke√§ arvo.  se on 1.96^2.  ja se on kuulemma se t√§rke√§.
+
+raja-arvolause: phat l√§hestyy ... ohi. Paha kirjottaa tota n√§ppiksell√§. 
+
+p-arvon luottamusv√§li from phat - 1.96SE to phat+1.96SE
+
+mantzel henzel on kolmiluotteisen ristitaulukon chisquare testi ik√§√§nkuin.  siell√§ on selitett√§v√§, selitt√§j√§ ja confounder. jotenkin se sitten testaa nollahypoteesia ett√§.... ett√§ oddsratio on sama selitt√§jiss√§, oli confounder l√§sn√§ tai ei.  tai ett√§ oddsratio on sama confounder l√§sn√§ -ryhm√§ss√§ ja confounderia ei-ryhm√§ss√§. Jotenkin tosi fiksulta se vaikutti mutta t√§ysin selville en p√§√§ssyt.
+
 
 
 
