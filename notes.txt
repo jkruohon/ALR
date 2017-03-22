@@ -1,4 +1,4 @@
-4 läksyä jotka ARVOSTELLAAN ja muodostavat 2/3 arvosanasta.
+﻿4 läksyä jotka ARVOSTELLAAN ja muodostavat 2/3 arvosanasta.
 
 !!läksyjen on oltava pdf-muodossa!!
 
@@ -98,7 +98,9 @@ raja-arvolause: phat lähestyy ... ohi. Paha kirjottaa tota näppiksellä.
 
 p-arvon luottamusväli from phat - 1.96SE to phat+1.96SE
 
-mantzel henzel on kolmiluotteisen ristitaulukon chisquare testi ikäänkuin.  siellä on selitettävä, selittäjä ja confounder. jotenkin se sitten testaa nollahypoteesia että.... että oddsratio on sama selittäjissä, oli confounder läsnä tai ei.  tai että oddsratio on sama confounder läsnä -ryhmässä ja confounderia ei-ryhmässä. Jotenkin tosi fiksulta se vaikutti mutta täysin selville en päässyt.
+mantzel henzel on kolmiluotteisen ristitaulukon chisquare testi ikäänkuin.  siellä on selitettävä, selittäjä ja confounder. jotenkin se sitten testaa nollahypoteesia että.... että oddsratio on sama selittäjissä, oli confounder läsnä tai ei.  tai että oddsratio on sama confounder läsnä -ryhmässä ja confounderia ei-ryhmässä. Jotenkin tosi fiksulta se vaikutti mutta täysin selville en päässyt. 
+
+Cochran-Mandel-Haenzel testi taitaa siis testata sitä nollahypoteesia, että x:n selitysvoima y:hyn (odds ratio) on sama kahdessa (tai useammassa) eri potentiaalisen sekoittavan muuttujan K luokassa. jos p-arvoksi tulee <0.05, niin voidaan 95% varmuudella todeta, että sekoittajan luokilla on vaikutusta odds ratioon eli se confoundaa. Kuitenkin tulokset vaihtelevat sen perusteella, käytetäänkö Yatesin jatkuvuuskorjausta (correct = TRUE)
 
 
 

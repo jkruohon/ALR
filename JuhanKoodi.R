@@ -26,11 +26,11 @@ chisq.test(m,correct=FALSE) #ilman continuity correctionia
 c0<-chisq.test(m,correct=FALSE)
 c0$observed #näyttää havaitut arvot
 c0$expected #näyttää odotetut arvot (jos nollahypoteesi pätee)
-sum((c0$observed[,1]-c0$expected[,1])**2/c0$expected[,1]+(c0$observed[,2]-c0$expected[,2]**2/c0$expected[,2]))
-#väärin vieläki. Juha sai arvon joka oli yli 1.
+sum((c0$observed[,1]-c0$expected[,1])**2/c0$expected[,1]+(c0$observed[,2]-c0$expected[,2])**2/c0$expected[,2])
+#Onkohan tämä nyt chi-squared testisuureen laskeminen?
 
 m1<-matrix(c(6,30,30,360),ncol=2)
-m0<-matrix(c(40,4,440,80),ncol=2)
+m2<-matrix(c(40,4,440,80),ncol=2)
 
 M<-array(rep(0,8),dim=c(2,2,2))
 M[,,1]<-m1
