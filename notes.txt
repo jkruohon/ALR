@@ -102,6 +102,31 @@ mantzel henzel on kolmiluotteisen ristitaulukon chisquare testi ikäänkuin.  si
 
 Cochran-Mandel-Haenzel testi taitaa siis testata sitä nollahypoteesia, että x:n selitysvoima y:hyn (odds ratio) on sama kahdessa (tai useammassa) eri potentiaalisen sekoittavan muuttujan K luokassa. jos p-arvoksi tulee <0.05, niin voidaan 95% varmuudella todeta, että sekoittajan luokilla on vaikutusta odds ratioon eli se confoundaa. Kuitenkin tulokset vaihtelevat sen perusteella, käytetäänkö Yatesin jatkuvuuskorjausta (correct = TRUE)
 
+logit-funktio. logit(p)  p (0,1)
+logit (p/1-p) siis. eli logit(odds).  eli log-odds.
+
+LR sanoo:  logit(Pi) = B0 + B1Xi, ... B2Xi. i ilmeisesti AINA tarkoittaa tiettyä havaintoyksikköä/yksilöä.
+
+theta on yhtä kuin logodds tässä notaatiossa.  vai onko se log(p)???
+
+logit^-1   on merkntätapa jolla merkitään logitin käänteisfunktiota. (log-odds todennäköisyydeksi)
+
+logistinen jakauma on S-käppyrä jonka kulmakerroin on isoin lähellä nollaa, sitten tasaantuu. pysyy 0 ja 1 välissä.
+
+dian kohta 8) datagenerointi. the X values are evenly spaced going from -1 to 1.
+
+B0 = logit(0.3).   öööö kuvaaja menee nollan läpi 0.3 kohdalla sanoi hän. niin joo koska tuo on vakiotermi.
+
+MLE. L(B0B1)=(ni!yi!)Pi() ohi.
+
+ell latex symboli kaunokirjoitus L.  log likelihood symboli. etsitään ne vakion ja selittäj(ä/ie)n arvot jotka jotka mahdollistavat havaitun datan "uskottavuuden" (likelihood).  tai oikeastaan havaitun datan uskottavuuden logaritmin (log-likelihood)
+
+Newton's method. Solve G(x)=0
+
+hakuammuntoja. kokeillaan ensin nollalla. jos ei tuu arvoks nolla, korjataan jotenkin käyttämällä tangentteja, kolmioita ja kulmakertoimia.
+
+
+
 
 
 
