@@ -133,7 +133,9 @@ AHAA SE KAMALA t yläindeksi tarkoittaa TRANSPOSE-  t() on myös R:ssä transpos
 
 Newtonin algoritmi, ehkä MLE pitäisi kuulemma kurssin jälkeen osata. 
 
-Newtonin algoritmia käytetään myös Poissonin ja Coxin regressiossa:
+Newtonin algoritmia käytetään myös Poissonin ja Coxin regressiossa.
+
+
 
 
 
