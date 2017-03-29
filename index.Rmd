@@ -2,22 +2,19 @@
 title: "Applied Logistic Regression"
 author: "Juho Ruohonen"
 date: "14 maaliskuuta 2017"
-output: html_document
+output: pdf_document
 theme: cayman
+toc: true
+    toc_depth: 2
+    fig_caption: true
+    fig_width: 6
+    fig_height: 4
+    code_folding: show
 ---
 
-# These are notes from the applied logistic regression course. Might be in English or in Finnish.
-
-i refers to an individual.  havaintoyksikkö?
-
-Yi= 1,0
-
-Xi   on kai Xn saama arvo havaintoyksikön i kohdalla.
-
-Yi1 havaintoyksikkö on kipeä. Yi0 havaintoyksikkö ei ole kipeä.  tai ostaa tuotteen. tms.
-
-
-
-## Including Plots
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+***
+  
+```{r child = "hw1_RuohonenJK.Rmd"}
+```
+  
+***
