@@ -135,6 +135,22 @@ Newtonin algoritmi, ehkä MLE pitäisi kuulemma kurssin jälkeen osata.
 
 Newtonin algoritmia käytetään myös Poissonin ja Coxin regressiossa.
 
+jatkuvat selittäjämuuttujat kuulemma usein keskistetään miinustamalla niistä keskiarvo.
+
+vakiotermin P mitataan sitä hypoteesia vastaan että se olisi arvoltaan nolla.
+
+taas tuli esiin että jos otoskoko on riittvän suuri niin pienetkin erot ovat tilastollisesti merkitseviä. mutta se ei välttämättä todellakaan tarkoita, että ne olisivat sisällöllisesti merkittäviä.
+
+jep eli logitissa efektit ovat additiivisia LOGIT-skaalassa.mutta eivät varsinaisessa odds ratiossa.
+OR-skaalassa efektit puolestaan ovat kertoimellisia (multiplivative)
+
+logit(p) = b0 + b1x1 + b2x2 + b3xt   <- kolmas on "interaction term"
+
+weight and time are x1 and x2.   if x1 coeffcient changes with time, that's interaction.     the odds ratio of some predictor changes as a function of another prediction. you add an interaction term to the model with x1*x2? maybe?
+
+Caution: all interpretations assume that all relevant variables have been included in the model.
+
+ANOVA-jutut:
 
 
 
