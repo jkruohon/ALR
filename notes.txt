@@ -125,6 +125,16 @@ Newton's method. Solve G(x)=0
 
 hakuammuntoja. kokeillaan ensin nollalla. jos ei tuu arvoks nolla, korjataan jotenkin käyttämällä tangentteja, kolmioita ja kulmakertoimia.
 
+Kulmakerroin = slope coefficient.
+
+curvilinear käyrä. editorialize? mainospuheenomaista puhetta?
+
+AHAA SE KAMALA t yläindeksi tarkoittaa TRANSPOSE-  t() on myös R:ssä transpose komento. diag() ottaa matriisista  diagonaalirivin tai rivit
+
+Newtonin algoritmi, ehkä MLE pitäisi kuulemma kurssin jälkeen osata. 
+
+Newtonin algoritmia käytetään myös Poissonin ja Coxin regressiossa:
+
 
 
 
