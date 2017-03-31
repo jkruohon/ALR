@@ -3,7 +3,6 @@ title: "Applied Logistic Regression"
 author: "Juho Ruohonen"
 date: "Spring 2017"
 output:
-  html_document: default
   pdf_document: default
 theme: cayman
 toc: yes
