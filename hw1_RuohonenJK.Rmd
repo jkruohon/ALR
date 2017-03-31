@@ -8,7 +8,7 @@ output: pdf_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+# Assignment 1
 ## 1a: Cross-tabulating a Binary Response Variable and a Binary Predictor
 In this exercise we have a case-control dataset that was collected to study the association between smoking and lung cancer. Here are the counts presented in a 2x2 contingency table:
 
