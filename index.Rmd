@@ -4,12 +4,6 @@ author: "Juho Ruohonen"
 date: "14 maaliskuuta 2017"
 output: pdf_document
 theme: cayman
-toc: true
-    toc_depth: 2
-    fig_caption: true
-    fig_width: 6
-    fig_height: 4
-    code_folding: show
 ---
 
 ***
