@@ -9,7 +9,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# 1a: Cross-tabulating a Binary Response Variable and a Binary Predictor
+## 1a: Cross-tabulating a Binary Response Variable and a Binary Predictor
 In this exercise we have a case-control dataset that was collected to study the association between smoking and lung cancer. Here are the counts presented in a 2x2 contingency table:
 
 ```{r}
@@ -42,7 +42,7 @@ addmargins(crosstab)
   
   It's hard for me to say intuitively whether this difference looks statistically significant. But that is exactly what Pearson's chi-square test is used to measure.
   
-#1b: Pearson's Chi-Squared Test of Independence
+## 1b: Pearson's Chi-Squared Test of Independence
 As per the instructions, we will run the chi-square test on our contingency table __without__ Yates' continuity correction:
 
 ```{r}
@@ -52,7 +52,7 @@ chisq.test(crosstab, correct = FALSE)
   
   The association is statistically significant at the highest (.001) level, as evidenced by the extremely low p-value.
   
-#2: More Chi-Square Testing
+## 2: More Chi-Square Testing
 Same procedure, different data:
 
 ```{r}
@@ -65,7 +65,7 @@ chisq.test(crosstab2, correct = FALSE)
   
   The chi-square test statistic is less than .2 here -- in a 2x2 contingency table a value of at least 3.84 is required for statistical significance. Likewise the p-value of almost .9 plainly shows that the association doesn't even approach statistical significance.
   
-#3: Controlling for a Potential Confounder
+## 3: Controlling for a Potential Confounder
 Let us now suppose that the dataset above is stratified by the two levels of a potential confounder that is binary. The following are our two strata:
 
 ```{r}
@@ -94,7 +94,7 @@ The effect of the exposure is greater in Stratum 2, but it falls short of the st
   
   However, despite the lack of statistical significance, the exposure is clearly having at least some effect -- a positive one. This fact was effectively obscured by the confounder earlier.  
   
-#4: Common Odds Ratio
+## 4: Common Odds Ratio
 Let's now calculate the common odds ratio for the exposure across both strata. The common odds ratio of the strata is the _weighted average_ of the stratum-specific odds ratios, in which strata with more observations are given more weight that ones with few observations. R has a function that does all this calculus with a single command, but for pedagogical reasons we will first try doing it by hand:
   
 ```{r}
@@ -109,14 +109,14 @@ mantelhaen.test(juxtaposed.strata, correct = FALSE)
 
 The result is indeed identical, so let us rejoice! I must say, though, that it took me a long time to figure out how to correctly apply the manual formula. The key thing that I eventually discovered was that the innermost parentheses are critically important for the operation to work correctly. In other words, _a~k~d~k~/n~k~_ is wrong and _(a~k~d~k~)/n~k~_ is right. This contradicts what I was taught about basic calculus in elementary school -- I was told that parentheses are not necessary in division and multiplication and that the result will be the same regardless of the order in which you do the multiplications/divisions. It appears that I was shamelessly misled, causing me much wailing and gnashing of teeth.
 
-#5: Cochran-Mantel-Haenzel Test for Independence of Stratum and Outcome
+## 5: Cochran-Mantel-Haenzel Test for Independence of Stratum and Outcome
 The CMH test measures the probability that an observed difference in how different groups (strata) respond to a treatment is due to chance. The manual formula for computing the test statistic looks so cryptic and intimidating to a non-mathematician like me that I won't even try calculating it by hand. We'll just look at the Mantel-Haenszel chi-square value and the corresponding p-value reported by __mantelhaen.test()__ in the previous section. Chi-square is 3.9 and p is just below .05. This implies that the difference between the strata is indeed significant, i.e., stratum is a significant confounder.[^1] 
 
 [^1]: If we run the CMH test _without_ Yates' continuity correction, we get a p-value slightly above .06, which in principle is not statistically significant. The confidence interval remains entirely below 1, however.
   
 As for an overall conclusion based on the CMH test result, mine doesn't differ significantly from the interpretation of the separate analyses of the strata. The preventive measure seems to be helping both strata to avoid the illness, although Stratum 2 benefits statistically significantly more. Since this is an illness that we're talking about, the practical implication for me is that if the preventive measure is not expensive, time-consuming or highly unpleasant, it should be recommended to everyone in the relevant population, regardless of their stratum.
 
-#6: Plotting Probabilities in Logistic Regression
+## 6: Plotting Probabilities in Logistic Regression
 Logistic regression models the probability of the binary response being "success", but not directly -- the natural logarithm of the odds corresponding to the probability, i.e., its _log-odds_, is used as a link between the probability and the predictors. The link function is a way around the inconvenient fact that probabilities have a restricted range between 0 and 1. An $e$-based logarithm, on the other hand, ranges between negative and positive infinity. This transformation of a probability into its log-odds is called the _logit transformation_. In solving the restricted range problem, the logit transformation makes the interpretation of logistic regression coefficients similar to the interpretation of the coefficients in linear regression -- the sign of the coefficient immediately tells us whether whether a given predictor's effect on the outcome being a "success" is positive or negative.
 
 Let us now plot the probability of "success" in three logistic regression models, all of which share $n = 30$ and a single continuous predictor $x = (i-15.5)/14.5$, but each model having a different combination of constant term and predictor coefficient:
@@ -161,7 +161,7 @@ ggplot(data=OurData, aes(x=x, y=p.I)) +
 ```  
   This illustrates how the constant determines the value at which the graph intercepts the y axis, and the sign of the predictor coefficient determines whether the graph is ascending or descending. It is  worth repeating here that even though the constant term is either __logit(0.3)__ or __logit(0.7)__ in each model, converting the logodds values back into probabilities also converts these constant terms back into the their input values, i.e., __logit(0.3)__ and __logit(0.7)__ become the y-intercept probabilities 0.3 and 0.7, respectively.
   
-#7: From Log-Odds to Probability and Back
+## 7: From Log-Odds to Probability and Back
 If the log-odds of becoming ill are -2, then the probability of becoming ill is:  
 
 ```{r}

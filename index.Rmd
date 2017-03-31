@@ -1,7 +1,7 @@
 ---
 title: "Applied Logistic Regression"
 author: "Juho Ruohonen"
-date: "14 maaliskuuta 2017"
+date: "Spring 2017"
 output: pdf_document
 theme: cayman
 ---
