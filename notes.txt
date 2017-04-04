@@ -150,7 +150,15 @@ weight and time are x1 and x2.   if x1 coeffcient changes with time, that's inte
 
 Caution: all interpretations assume that all relevant variables have been included in the model.
 
-ANOVA-jutut:
+ANOVA-jutut: ohi
+
+kuulemma lääkärit usein kysyvät common OR hantel maenzelin tapaan eivätkä välttämättä tunne logittia niinkään.
+
+jos plotataan todennäköisyyksiä niin yleensä on fiksua laittaa vaihteluväliksi 0,1 kuten läksyssäni älykkäästi teinkin. perus-R:ssä ylim=c(0,1) tämän tekee.
+
+läksy 2 deadline ennen kuin Juha tiistaiaamuna heräjää.
+
+"most model choice literature is useless"
 
 
 
