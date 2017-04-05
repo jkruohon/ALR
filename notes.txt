@@ -1,4 +1,4 @@
-﻿4 läksyä jotka ARVOSTELLAAN ja muodostavat 2/3 arvosanasta.
+﻿﻿4 läksyä jotka ARVOSTELLAAN ja muodostavat 2/3 arvosanasta.
 
 !!läksyjen on oltava pdf-muodossa!!
 
@@ -159,6 +159,8 @@ jos plotataan todennäköisyyksiä niin yleensä on fiksua laittaa vaihteluväli
 läksy 2 deadline ennen kuin Juha tiistaiaamuna heräjää.
 
 "most model choice literature is useless"
+
+wikipediassa ehkä kuulemma paras selitys fisherin algoritmista.
 
 
 
