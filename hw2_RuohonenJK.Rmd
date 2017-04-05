@@ -1,0 +1,159 @@
+---
+title: "Applied Logistic Regression -- Assignment 2"
+author: "Juho Ruohonen"
+date: "April xx, 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Assignment 2
+## 1a: Data Generation
+```{r}
+N<-15
+n<-2*N+1
+x1<-c(-N:N)/N
+x2<-c(rep(0,round(n/3)),rep(1,n-round(n/3)))
+x0<-rep(1,n)
+X<-cbind(x0,x1,x2)
+B<-c(log(0.3/0.7),1,-0.3)
+lp<-X%*%B
+p<-exp(lp)/(1+exp(lp))
+set.seed(100) #(This is to make sure that the randomly generated outcomes 
+  #are the same every time the code is run)
+U<-runif(n)
+y<-as.numeric(U<p)
+```  
+## 1b: Plotting the True Probabilities
+```{r}
+library(ggplot2)
+the.data<-data.frame(x0,x1,x2,lp,p,y)
+ggplot(data=the.data, aes(x=x1, y=y)) +
+  scale_y_continuous(limits=c(0,1), breaks=seq(from=0,to=1,by=0.1)) + 
+  scale_x_continuous(breaks=seq(from=-1,to=1,by=0.2)) + 
+  geom_point(aes(y=y,x=x1)) + 
+  geom_line(aes(y=p,x=x1),linetype="dashed") +
+  geom_vline(xintercept = 0)
+```  
+
+## 2: Newton's Method
+```{r}
+#I think the idea is to start with the grand mean (aka intercept) of the true probability:
+p1<-sum(y)/n
+#Since this is logistic regression, we use the log-odds (aka logit) of the probability
+  #rather than the probability itself. The other predictor coefficients are
+  #are apparently given an initial value of 0:
+B0<-c(log(p1/(1-p1)), 0, 0)
+names(B0) <- c("x0","x1","x2")
+```  
+### So here is our starting point:
+```{r}
+B0
+```  
+### Fisher Scoring Iteration 1:
+```{r}
+lp0<-X%*%B0
+p0<-exp(lp0)/(1+exp(lp0))
+dl<-t(X)%*%(y-p0)
+w<-as.vector(p0*(1-p0))
+d2l<--t(X)%*%diag(w)%*%X
+B1<-B0-solve(d2l,dl)
+t(B1)
+```  
+### The values changed, so we'll do an Iteration 2:
+```{r}
+B0<-B1
+lp0<-X%*%B0
+p0<-exp(lp0)/(1+exp(lp0))
+dl<-t(X)%*%(y-p0)
+w<-as.vector(p0*(1-p0))
+d2l<--t(X)%*%diag(w)%*%X
+B1<-B0-solve(d2l,dl)
+t(B1)
+```  
+### The values changed again, so we'll do an Iteration 3:
+```{r}
+B0<-B1
+lp0<-X%*%B0
+p0<-exp(lp0)/(1+exp(lp0))
+dl<-t(X)%*%(y-p0)
+w<-as.vector(p0*(1-p0))
+d2l<--t(X)%*%diag(w)%*%X
+B1<-B0-solve(d2l,dl)
+t(B1)
+```  
+### The values changed again, so we'll do an Iteration 4:
+```{r}
+B0<-B1
+lp0<-X%*%B0
+p0<-exp(lp0)/(1+exp(lp0))
+dl<-t(X)%*%(y-p0)
+w<-as.vector(p0*(1-p0))
+d2l<--t(X)%*%diag(w)%*%X
+B1<-B0-solve(d2l,dl)
+t(B1)
+```  
+### The values changed very little now. But I guess we'll do an Iteration 5:
+```{r}
+B0<-B1
+lp0<-X%*%B0
+p0<-exp(lp0)/(1+exp(lp0))
+dl<-t(X)%*%(y-p0)
+w<-as.vector(p0*(1-p0))
+d2l<--t(X)%*%diag(w)%*%X
+B1<-B0-solve(d2l,dl)
+t(B1)
+```  
+### Only x0 changed. I suppose we'll keep going until nothing changes. Iteration 6:
+```{r}
+B0<-B1
+lp0<-X%*%B0
+p0<-exp(lp0)/(1+exp(lp0))
+dl<-t(X)%*%(y-p0)
+w<-as.vector(p0*(1-p0))
+d2l<--t(X)%*%diag(w)%*%X
+B1<-B0-solve(d2l,dl)
+t(B1)
+```
+#### Nothing changed. This might be what stats people call "convergence". Thus, a total of 5 Fisher Scoring Iterations were needed.
+  
+## 3: R's _glm()_ Function
+Now we'll have R's __glm()__ function carry out the same procedure, and hope for the same results:
+```{r}
+Y<-cbind(y,1-y)
+logreg<-glm(Y~x1+x2,family=binomial(link="logit"))
+summary(logreg)
+```  
+Indeed, the coefficients are the same (though the model summary rounds them). The number of Fisher Scoring iterations performed is also identical. This suggests major mistakes have not been made.  
+
+## 4: Variance-Covariance Matrices
+```{r}
+#Here's the variance-covariance matrix of the manually computed model:
+(V<--solve(d2l))
+#Here's the variance-covariance matrix of the model computed by the glm() function:
+vcov(logreg)
+```
+Everything is identical again, notwithstanding rounding.  
+
+## 5: Standard Errors of Model Coefficients:
+```{r}
+#Predictor coefficient standard errors in the manually computed model:
+sqrt(diag(V))
+#Predictor coefficient standard errors in glm()-computed model:
+sqrt(diag(vcov(logreg)))
+```
+## 6: x1 as the Only Predictor
+```{r}
+logreg.x1<-glm(Y~x1, family=binomial(link="logit"))
+summary(logreg.x1)
+```  
+## 7: x2 as the Only Predictor
+```{r}
+logreg.x2<-glm(Y~x2, family=binomial(link="logit"))
+summary(logreg.x2)
+```  
+## 8: Interpreting the Results
+So, the full model (with both predictors included) reports a positive effect on the outcome for __x1__ and a negative one for __x2__, both of them statistically non-significant. A very similar result is obtained when we only include __x1__ or __x2__ in the model -- the former has a positive coefficient, the latter a negative one. My interpretation is that increasing magnitude of the continuous property __x1__ favors the occurrence of the outcome, while membership in group __x2__ (represented by value 1 of the dichotomous predictor) disfavors it. This is well illustrated by our graph in exercise 1 -- the slope is consistently ascending as a function of __x1__. The single downward blip in the graph (at about x1 = 0.3) occurs when Group Identity (x2) changes from 0 to 1.
+
+***
