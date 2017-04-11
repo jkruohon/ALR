@@ -1,7 +1,7 @@
 ---
 title: "Applied Logistic Regression -- Assignment 2"
 author: "Juho Ruohonen"
-date: "April xx, 2017"
+date: "April 11, 2017"
 output: pdf_document
 ---
 
@@ -20,12 +20,22 @@ X<-cbind(x0,x1,x2)
 B<-c(log(0.3/0.7),1,-0.3)
 lp<-X%*%B
 p<-exp(lp)/(1+exp(lp))
-set.seed(100) #(This is to make sure that the randomly generated outcomes 
-  #are the same every time the code is run)
-U<-runif(n)
-y<-as.numeric(U<p)
+summary(as.vector(p))
 ```  
+Up until this point, we've done the same stuff as in the previous assignment. We've assigned values to a constant term and two explanatory variables -- one continuous and the other binary -- and we've calculated the logit and probability of a "success"" outcome for each unit of observation. As seen above, the mean probability is about .27. What is new in this exercise is that we will now generate $n$ binary outcomes that are loosely based on $p$ but have an element of random variation in them:
+
+```{r}
+set.seed(100) #(This is to make sure that the randomly generated outcomes 
+  #are the same every time this code is run)
+U<-runif(n) #Generate n random values between 0 and 1
+y<-as.numeric(U<p) #Define "success"" as an observation for which p exceeds U
+sum(y); mean(y) #See how they came out
+```  
+This batch of binary outcomes is "unlucky" in the sense that at .16, the observed rate of "success" is significantly lower than the mean probability that we calculated earlier. This is due to the random element. The larger $n$ is, the more similar we can expect these two means to be.  
+
 ## 1b: Plotting the True Probabilities
+We'll now plot the calculated probabilities against the actual observed outcomes.  
+
 ```{r}
 library(ggplot2)
 the.data<-data.frame(x0,x1,x2,lp,p,y)
@@ -36,30 +46,32 @@ ggplot(data=the.data, aes(x=x1, y=y)) +
   geom_line(aes(y=p,x=x1),linetype="dashed") +
   geom_vline(xintercept = 0)
 ```  
+The number of observations here is rather small for visually evaluating how well the success rate follows $p$. But there are 50% more successes on the right side of the plane than the left, at least!  
 
 ## 2: Newton's Method
+Now for the main point of this exercise, which is to (semi)manually calculate the coefficients of the constant term and the predictors based on their respective values and the actual outcomes.
 ```{r}
 #I think the idea is to start with the grand mean (aka intercept) of the true probability:
 p1<-sum(y)/n
-#Since this is logistic regression, we use the log-odds (aka logit) of the probability
-  #rather than the probability itself. The other predictor coefficients are
-  #apparently given an initial value of 0:
-B0<-c(log(p1/(1-p1)), 0, 0)
-names(B0) <- c("x0","x1","x2")
+#For the constant term, our starting value is the logit of the overall probability
+  # of success rather than the probability itself. The other predictor coefficients 
+  # are apparently given an initial value of 0 each:
+B0<-c(x0 = log(p1/(1-p1)), x1 = 0, x2 = 0)
 ```  
+
 ### So here is our starting point:
 ```{r}
 B0
 ```  
 ### Fisher Scoring Iteration 1:
 ```{r}
-lp0<-X%*%B0
-p0<-exp(lp0)/(1+exp(lp0))
-dl<-t(X)%*%(y-p0)
-w<-as.vector(p0*(1-p0))
-d2l<--t(X)%*%diag(w)%*%X
-B1<-B0-solve(d2l,dl)
-t(B1)
+lp0<-X%*%B0 #Calculate the logits
+p0<-exp(lp0)/(1+exp(lp0)) #Calculate the probabilities from the logits
+dl<-t(X)%*%(y-p0) #Transpositions and matrix multiplications. This is where I fall off the wagon.
+w<-as.vector(p0*(1-p0)) #This looks like it could be the variance.
+d2l<--t(X)%*%diag(w)%*%X #...might have something to do with derivatives and the covariance matrix...
+B1<-B0-solve(d2l,dl) #Solve some equation.
+t(B1) #View the new adjusted coefficients
 ```  
 ### The values changed, so we'll do an Iteration 2:
 ```{r}
@@ -116,7 +128,9 @@ d2l<--t(X)%*%diag(w)%*%X
 B1<-B0-solve(d2l,dl)
 t(B1)
 ```
-#### Nothing changed. This might be what stats people call "convergence". Thus, a total of 5 Fisher Scoring Iterations were needed.
+#### Nothing changed. This might be what statistics people call "convergence". Thus, a total of 5 Fisher Scoring Iterations were needed to obtain the coefficients. The 6th iteration didn't change anything.
+
+So, that was (semi-)manual logistic regression. Those who are really sharp at math can probably do it even with just a pen and paper.
   
 ## 3: R's _glm()_ Function
 Now we'll have R's __glm()__ function carry out the same procedure, and hope for the same results:
@@ -125,16 +139,16 @@ Y<-cbind(y,1-y)
 logreg<-glm(Y~x1+x2,family=binomial(link="logit"))
 summary(logreg)
 ```  
-Indeed, the coefficients are the same (though the model summary rounds them). The number of Fisher Scoring iterations performed is also identical. This suggests major mistakes have not been made.  
+Indeed, the coefficients are the same (though the model summary rounds them). The number of Fisher Scoring iterations performed is also identical. This suggests major mistakes have not been made, even though I didn't entirely understand what I was doing.  
 
 ## 4: Variance-Covariance Matrices
 ```{r}
 #Here's the variance-covariance matrix of the manually computed model:
 (V<--solve(d2l))
-#Here's the variance-covariance matrix of the model computed by the glm() function:
+#Here's the variance-covariance matrix of the model that was computed by the glm() function:
 vcov(logreg)
 ```
-Everything is identical again, notwithstanding rounding.  
+The values are very close but not identical. I wonder if this might be because the we actually did 6 Fisher scoring iterations in the manual regression, while __glm()__ did only 5. Perhaps the 6th manual iteration resulted in some minuscule further adjustments that weren't visible because of rounding...?
 
 ## 5: Standard Errors of Model Coefficients:
 ```{r}
@@ -142,7 +156,9 @@ Everything is identical again, notwithstanding rounding.
 sqrt(diag(V))
 #Predictor coefficient standard errors in glm()-computed model:
 sqrt(diag(vcov(logreg)))
-```
+```  
+The same is happening here. The values of the manually and programmatically obtained coefficients are very very similar, but not identical.  
+
 ## 6: x1 as the Only Predictor
 ```{r}
 logreg.x1<-glm(Y~x1, family=binomial(link="logit"))
@@ -154,6 +170,8 @@ logreg.x2<-glm(Y~x2, family=binomial(link="logit"))
 summary(logreg.x2)
 ```  
 ## 8: Interpreting the Results
-So, the full model (with both predictors included) reports a positive effect on the outcome for __x1__ and a negative one for __x2__, both of them statistically non-significant. A very similar result is obtained when we only include __x1__ or __x2__ in the model -- the former has a positive coefficient, the latter a negative one. My interpretation is that increasing magnitude of the continuous property __x1__ favors the occurrence of the outcome, while membership in group __x2__ (represented by value 1 of the dichotomous predictor) disfavors it. This is well illustrated by our graph in exercise 1 -- the slope is consistently ascending as a function of __x1__. The single downward blip in the graph (at about x1 = 0.3) occurs when Group Identity (x2) changes from 0 to 1.
+So, the full model (with both predictors included) reports a positive effect on the outcome for __x1__ and a negative one for __x2__, neither of them statistically significant. A very similar result is obtained when we only include __x1__ or __x2__ in the model -- the former has a positive coefficient, the latter a negative one. My interpretation is that increasing magnitude of the continuous property __x1__ favors the occurrence of the outcome, while membership in group __x2__ (represented by value 1 of the dichotomous variable) disfavors it. This is well illustrated by our graph in exercise 1 -- the slope is consistently ascending as a function of __x1__. The single downward blip in the ascending graph (at about __x1__ = 0.3) occurs when Group Membership (x2) changes from 0 to 1.  
+  
+  In the full model, the constant term is the least statistically significant of the three factors. With only either __x1__ or __x2__ as an explanatory variable, on the other hand, it is much more significant than the sole predictor variable. Here's a hypothesis: There's the same amount of __Y__ variation in all three models. A regression model always assumes that all relevant factors have been included in the model, and it tries to explain the __Y__ variation on the basis of those factors (I use the word "factor" here in the general sense, not in the technical, R-specific one). We built the effect of __x1__ and __x2__ into this data ourselves, so we know the exact extent to which they influence __Y__. When either __x1__ or __x2__ is left out, the regression model tries to account for the now-unexplained __Y__ variation some other way, and the only remaining option is the constant term. Thus the constant term's assumed role in the variation is amplified.
 
 ***
