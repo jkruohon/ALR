@@ -1,4 +1,4 @@
-﻿﻿4 läksyä jotka ARVOSTELLAAN ja muodostavat 2/3 arvosanasta.
+﻿﻿﻿4 läksyä jotka ARVOSTELLAAN ja muodostavat 2/3 arvosanasta.
 
 !!läksyjen on oltava pdf-muodossa!!
 
@@ -161,6 +161,15 @@ läksy 2 deadline ennen kuin Juha tiistaiaamuna heräjää.
 "most model choice literature is useless"
 
 wikipediassa ehkä kuulemma paras selitys fisherin algoritmista.
+
+"entertain a hypothesis" <- slick!
+
+joskus luokkamuuttujien kanssa yksikään sen leveleistä ei ole merkitsevä, mutta kokonaisuutena arvioiden se luokkamuuttuja kuitenkin on merkitsevä.
+
+glm logitin raportoima p-value on Waldin testi. Wald test. Anovan tekemä testi taas on LRT, likelihood ratio test. Tulokset ovat samanmoiset. Tieteellisessä tutkimuksessa on aiheellista mainita kumpaa testiä on käytetty.
+
+Juha sanoo että jos iässä on mahdollisia kynnysarvoja niin saattaa olla informatiivisempaa vertailla vuonna x syntyneiden todennäköisyttä vuonna y syntyneiden todennäköisyyteen sen sijaan, että kerrottaisiin vain OR.
+
 
 
 
