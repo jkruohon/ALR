@@ -69,6 +69,9 @@ for(i in 1:N0){
   lreg<-glm(Y~G+x,family=binomial)
   B0[i,]<-coef(lreg)
 }
+summary(B0)
+hist(B0[,1])
+hist(B0[,2])
 hist(B0[,3])
 plot(B0[,1],B0[,2])
 plot(B0[,1],B0[,3])
@@ -77,3 +80,59 @@ plot(B0[,2],B0[,3])
 #Neat WOW! This illustrates the law of large numbers! Though there is a great deal of random variation in the coefficients in B0,
 #The _means of those coefficients_ are close to the values originally assigned to them. This is because as the number of trials 
 #increases, the "true value" or expected value will inevitably be approached.
+
+#Simulation example THIS IS THE CODE FROM THE EMAIL
+
+#Simulation example
+
+N<-50
+x<-30+4*rnorm(N)
+G<-c(rep(0,round(N/3)),rep(1,N-round(N/3)))
+X<-cbind(rep(1,N),G,x)
+B<-c(log(0.25/0.75)-0.1*30,0.5,0.1)
+lp<-X%*%B
+p<-exp(lp)/(1+exp(lp))
+N0<-100
+B0<-matrix(rep(0,N0*3),ncol=3)
+for (i in 1:N0){
+  U<-runif(N)
+  Y<-as.numeric(U<=p)
+  lreg<-glm(Y~G+x,family=binomial)
+  B0[i,]<-coef(lreg)
+}
+summary(B0)
+hist(B0[,1])
+hist(B0[,2])
+hist(B0[,3])
+plot(B0[,1],B0[,2])
+plot(B0[,1],B0[,3])
+plot(B0[,2],B0[,3])
+
+#jatkuvat selittäjämuuttujat kannattaa ehkä keskistää. koska muuten se voi alkaa "korreloida" vakiotermin kanssa niin että ne kompensoivat toisiaan.
+
+
+#Simulation example NYT ON X1 KESKISTETTY!!! HUOMATKAA MITEN KORRELAATIO x:n ja vakion välillä katoaa!!
+
+N<-50
+x<-30+4*rnorm(N)
+G<-c(rep(0,round(N/3)),rep(1,N-round(N/3)))
+X<-cbind(rep(1,N),G,x)
+B<-c(log(0.25/0.75)-0.1*30,0.5,0.1)
+lp<-X%*%B
+p<-exp(lp)/(1+exp(lp))
+N0<-100
+B0<-matrix(rep(0,N0*3),ncol=3)
+x1<-x-mean(x)
+for (i in 1:N0){
+  U<-runif(N)
+  Y<-as.numeric(U<=p)
+  lreg<-glm(Y~G+x1,family=binomial)
+  B0[i,]<-coef(lreg)
+}
+summary(B0)
+hist(B0[,1])
+hist(B0[,2])
+hist(B0[,3])
+plot(B0[,1],B0[,2])
+plot(B0[,1],B0[,3])
+plot(B0[,2],B0[,2])

@@ -67,9 +67,9 @@ B0
 ```{r}
 lp0<-X%*%B0 #Calculate the logits
 p0<-exp(lp0)/(1+exp(lp0)) #Calculate the probabilities from the logits
-dl<-t(X)%*%(y-p0) #Transpositions and matrix multiplications. This is where I fall off the wagon.
+dl<-t(X)%*%(y-p0) #Transpositions and matrix multiplications. This is where I fall off the wagon. "DERIVATIVES OF LOG-LIKELIHOOD""    p(x,g)  ovat se tuttu kaava. kunkin havaintoyksikön todennäköisyys on e potenssiin xi + gi.  Likelihood equation: se iso pylvässymboli on TULO. derivoidaan se niiden 3 argumentin suhteen.  transpoosia niin kolonnat muuttuvat riveiksi. NEwtonissa sitten otetaan derivaattojen derivaattoja jotta päästään sinne missä kulmakerroin 0 eli asiat ei enää muutu.
 w<-as.vector(p0*(1-p0)) #This looks like it could be the variance.
-d2l<--t(X)%*%diag(w)%*%X #...might have something to do with derivatives and the covariance matrix...
+d2l<--t(X)%*%diag(w)%*%X #...might have something to do with derivatives and the covariance matrix...""
 B1<-B0-solve(d2l,dl) #Solve some equation.
 t(B1) #View the new adjusted coefficients
 ```  
@@ -148,7 +148,7 @@ Indeed, the coefficients are the same (though the model summary rounds them). Th
 #Here's the variance-covariance matrix of the model that was computed by the glm() function:
 vcov(logreg)
 ```
-The values are very close but not identical. I wonder if this might be because the we actually did 6 Fisher scoring iterations in the manual regression, while __glm()__ did only 5. Perhaps the 6th manual iteration resulted in some minuscule further adjustments that weren't visible because of rounding...?
+The values are very close but not identical. I wonder if this might be because the we actually did 6 Fisher scoring iterations in the manual regression, while __glm()__ did only 5. Perhaps the 6th manual iteration resulted in some minuscule further adjustments that weren't visible because of rounding...? EDIT: Juha thinks so too.
 
 ## 5: Standard Errors of Model Coefficients:
 ```{r}
@@ -175,3 +175,5 @@ So, the full model (with both predictors included) reports a positive effect on 
   In the full model, the constant term is the least statistically significant of the three factors. With only either __x1__ or __x2__ as an explanatory variable, on the other hand, it is much more significant than the sole predictor variable. Here's a hypothesis: There's the same amount of __Y__ variation in all three models. A regression model always assumes that all relevant factors have been included in the model, and it tries to explain the __Y__ variation on the basis of those factors (I use the word "factor" here in the general sense, not in the technical, R-specific one). We built the effect of __x1__ and __x2__ into this data ourselves, so we know the exact extent to which they influence __Y__. When either __x1__ or __x2__ is left out, the regression model tries to account for the now-unexplained __Y__ variation some other way, and the only remaining option is the constant term. Thus the constant term's assumed role in the variation is amplified.
 
 ***
+
+
