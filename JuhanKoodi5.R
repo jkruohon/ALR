@@ -9,7 +9,7 @@
 # = 3 Forestry
 # = 4 Social Sciences 
 
-#Tässä alussa Juha käy läpi tuttuja perustapoja tutkia datan rakennetta.
+#T?ss? alussa Juha k?y l?pi tuttuja perustapoja tutkia datan rakennetta.
 
 hist(d$AGE)
 summary(d$AGE)
@@ -17,25 +17,25 @@ summary(d$AGE)
 logreg1<-glm(SW~SEX+factor(FAC)+AGE,family=binomial(link="logit"),data=d)
 summary(logreg1)
 
-logreg2<-glm(SW~SEX+AGE,family=binomial(link="logit"),data=d) #ilman tiedekuntaa. Ei näytä tuovan suurta eroa.
+logreg2<-glm(SW~SEX+AGE,family=binomial(link="logit"),data=d) #ilman tiedekuntaa. Ei n?yt? tuovan suurta eroa.
 #Residual deviance has to do with lack of fit.  smaller is better.
 #Null deviance is deviance when only the constant term is in the model.
-an1<-anova(logreg2,logreg1) #tämä vertaa kahta mallia.
-1-pchisq(an1$Deviance,4)  #chisq kertymäfunktion kvantiili, upper tail only. LOWER.TAIL TOIMII YHTÄHYVIN!!
+an1<-anova(logreg2,logreg1) #t?m? vertaa kahta mallia.
+1-pchisq(an1$Deviance,4)  #chisq kertym?funktion kvantiili, upper tail only. LOWER.TAIL TOIMII YHT?HYVIN!!
 
-#Tehdään nyt humanismista dummy:
+#Tehd??n nyt humanismista dummy:
 HUM<-as.numeric(d$FAC==0)
 logreg3<-glm(SW~SEX+AGE+HUM,family=binomial(link="logit"),data=d) 
-summary(logreg3) #ei edes pelkkä humanismi ole tilastollisesti merkitsevä tekijä
-an2<-anova(logreg2,logreg3) #tämän raportoima deviance arvo on siis täsmälleen sama testisuure kuin chi-square df 1:llä?
+summary(logreg3) #ei edes pelkk? humanismi ole tilastollisesti merkitsev? tekij?
+an2<-anova(logreg2,logreg3) #t?m?n raportoima deviance arvo on siis t?sm?lleen sama testisuure kuin chi-square df 1:ll??
 1-pchisq(an2$Deviance[2],1)
 
-#tehdään iästä luokkamuuttuja. Näin päästään tutkimaan onko iän vaikutus lineaarinen.
-AG<-round(d$AGE/10) #juha ei tykkää cut()ista
+#tehd??n i?st? luokkamuuttuja. N?in p??st??n tutkimaan onko i?n vaikutus lineaarinen.
+AG<-round(d$AGE/10) #juha ei tykk?? cut()ista
 logreg4<-glm(SW~SEX+factor(AG),family=binomial(link="logit"),data=d) 
 summary(logreg4)
-#vanhinten vanhusten p-arvo ei ole merkitsevä MUTTA SYY ON SE, että heiltä on niin vähän dataa.
-an3<-anova(logreg2,logreg4) #iällä on ehkä kriittinen arvo. ehkä nuo 50-60-vuotiaat ovat taistolaissukupolvea.
+#vanhinten vanhusten p-arvo ei ole merkitsev? MUTTA SYY ON SE, ett? heilt? on niin v?h?n dataa.
+an3<-anova(logreg2,logreg4) #i?ll? on ehk? kriittinen arvo. ehk? nuo 50-60-vuotiaat ovat taistolaissukupolvea.
 b1<-coef(logreg2)[2] #logodds of gender in model 2
 OR<-exp(b1) #OR of gender in model 2
 SE<-sqrt(vcov(logreg2)[2,2])
@@ -44,21 +44,23 @@ U<-exp(b1+1.96*SE) #upper bound
 b2<-coef(logreg2)[3]
 or20<-exp(20*b2)
 b0<-coef(logreg2)[1] #vakio
-#manuaalisesti laskettu miekanottotodennäköisyys 1950 syntyneille miehille. Tutulla tavalla kuten jo IODSin Logregrluvussa.
+#manuaalisesti laskettu miekanottotodenn?k?isyys 1950 syntyneille miehille. Tutulla tavalla kuten jo IODSin Logregrluvussa.
 p1950<-exp(b0+b2*(1999-1950))
 (p1950<-p1950/(1+p1950))
-#entäs vuonna 1970 syntyneet miehet
+#ent?s vuonna 1970 syntyneet miehet
 p1970<-exp(b0+b2*(1999-1970))
 (p1970<-p1970/(1+p1970))
 
-#Nyt tehdään uutta dataa:
+#Generating new data:
 N<-50
-x<-30+4*rnorm(N)
-G<-c(rep(0,round(N/3)),rep(1,N-round(N/3)))
+x<-30+4*rnorm(N) #This makes the random variation have SD of 4. The same woulda bin accomplished thru x<-rnorm(N,30,4)
+G<-c(rep(0,round(N/3)),rep(1,N-round(N/3))) #Group variable making about 17 of the people non-members and the other 33 or so members.
 X<-cbind(rep(1,N),G,x) #Design matrix
-B<-c(log(0.25/0.85)-30*0.1,0.5,0.1)
-lp<-X%*%B
-p<-exp(lp)/(1+exp(lp))
+B<-c(log(0.25/0.75)-30*0.1, 0.5, 0.1) #The 3 coefficients
+lp<-X%*%B #the logodds-values
+p<-exp(lp)/(1+exp(lp)) #the probabilities
+
+#Now a for-loop:
 N0<-100
 B0<-matrix(rep(0,N0*3),ncol=3)
 for(i in 1:N0){
@@ -72,3 +74,6 @@ plot(B0[,1],B0[,2])
 plot(B0[,1],B0[,3])
 plot(B0[,2],B0[,3])
 #Noiden kuvioiden erilaisuus on KE 12.4 oppitunnin aihe.
+#Neat WOW! This illustrates the law of large numbers! Though there is a great deal of random variation in the coefficients in B0,
+#The _means of those coefficients_ are close to the values originally assigned to them. This is because as the number of trials 
+#increases, the "true value" or expected value will inevitably be approached.
