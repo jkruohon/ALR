@@ -119,7 +119,7 @@ B0 = logit(0.3).   öööö kuvaaja menee nollan läpi 0.3 kohdalla sanoi hän. 
 
 MLE. L(B0B1)=(ni!yi!)Pi() ohi.
 
-ell latex symboli kaunokirjoitus L.  log likelihood symboli. etsitään ne vakion ja selittäj(ä/ie)n arvot jotka jotka mahdollistavat havaitun datan "uskottavuuden" (likelihood).  tai oikeastaan havaitun datan uskottavuuden logaritmin (log-likelihood)
+ell latex symboli kaunokirjoitus L.  log likelihood symboli. etsitään ne vakion ja selittäj(ä/ie)n arvot jotka jotka maksimoivat havaitun datan "uskottavuuden" (likelihood).  tai oikeastaan havaitun datan uskottavuuden logaritmin (log-likelihood)
 
 Newton's method. Solve G(x)=0
 
@@ -171,6 +171,8 @@ glm logitin raportoima p-value on Waldin testi. Wald test. Anovan tekemä testi 
 Juha sanoo että jos iässä on mahdollisia kynnysarvoja niin saattaa olla informatiivisempaa vertailla vuonna x syntyneiden todennäköisyttä vuonna y syntyneiden todennäköisyyteen sen sijaan, että kerrottaisiin vain OR.
 
 tutkimuksessa kokeillaan kiljoonaa eri mallia. kaikkia ei raportoida tuotoksessa, ainoastaan tärkeimmät. kuitenkin täytyy kertoa että kokeilin tällaista tuollaista ja sellaista mallia, ja niistä parhaaksi osoittautui (se joka raportoidaan).
+
+26.4 eteempäin conditional logit. "conditional logit is for matched data". Hmm...
 
 
 
