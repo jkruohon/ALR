@@ -186,6 +186,8 @@ case-control: valitaan jokaista sairastunutta kohden joku jolla on muuten tasan 
 
 eikä clogitkaan kuulemma toimi jos "pareissa" on yli 1+1 tyyppiä.
 
+ne glm():n residuaalit ovat kuulemma chi squared aina.  eli siten että kun käsketään 1-pchisq(deviance,df)   niin suuri p-arvo kertoo hyvästä mallista. Myös tilastollisen merkitsevyyden nollamallin ja sovitetun mallin välillä voi laskea tekemällä 1-pchisq(devianssienerotus,df:ienerotus)
+
 
 
 

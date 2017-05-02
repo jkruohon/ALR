@@ -1,0 +1,277 @@
+---
+title: "Applied Logistic Regression -- Assignment 3"
+author: "Juho Ruohonen"
+date: "DateComesHere, 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Assignment 4
+## 1. Residuals in Logistic Regression
+We'll go back to the dataset on Sentiments Toward Racial Integration in Public Housing. That dataset is currently in so-called Bernoulli format, in which one row corresponds to one observation. To make the following computation of residuals more illustrative, we will convert it into binomial format, which is better for summarizing each covariate pattern's rate of success.
+
+```{r include=FALSE}
+subset1<-data.frame(Proximity=rep(1,times=77),Contact=1,Norms="Favorable",PositiveSentiment=1)
+subset2<-data.frame(Proximity=rep(1,times=32),Contact=1,Norms="Favorable",PositiveSentiment=0)
+subset3<-data.frame(Proximity=rep(1,times=30),Contact=1,Norms="Unfavorable",PositiveSentiment=1)
+subset4<-data.frame(Proximity=rep(1,times=36),Contact=1,Norms="Unfavorable",PositiveSentiment=0)
+subset5<-data.frame(Proximity=rep(1,times=14),Contact=0,Norms="Favorable",PositiveSentiment=1)
+subset6<-data.frame(Proximity=rep(1,times=19),Contact=0,Norms="Favorable",PositiveSentiment=0)
+subset7<-data.frame(Proximity=rep(1,times=15),Contact=0,Norms="Unfavorable",PositiveSentiment=1)
+subset8<-data.frame(Proximity=rep(1,times=27),Contact=0,Norms="Unfavorable",PositiveSentiment=0)
+subset9<-data.frame(Proximity=rep(0,times=43),Contact=1,Norms="Favorable",PositiveSentiment=1)
+subset10<-data.frame(Proximity=rep(0,times=20),Contact=1,Norms="Favorable",PositiveSentiment=0)
+subset11<-data.frame(Proximity=rep(0,times=36),Contact=1,Norms="Unfavorable",PositiveSentiment=1)
+subset12<-data.frame(Proximity=rep(0,times=37),Contact=1,Norms="Unfavorable",PositiveSentiment=0)
+subset13<-data.frame(Proximity=rep(0,times=27),Contact=0,Norms="Favorable",PositiveSentiment=1)
+subset14<-data.frame(Proximity=rep(0,times=36),Contact=0,Norms="Favorable",PositiveSentiment=0)
+subset15<-data.frame(Proximity=rep(0,times=41),Contact=0,Norms="Unfavorable",PositiveSentiment=1)
+subset16<-data.frame(Proximity=rep(0,times=118),Contact=0,Norms="Unfavorable",PositiveSentiment=0)
+contact<-rbind(subset1,subset2,subset3,subset4,subset5,subset6,subset7,subset8,subset9,subset10,
+  subset11,subset12,subset13,subset14,subset15,subset16)
+model<-glm(PositiveSentiment ~ Contact + Norms, family=binomial(link=logit), data = contact)
+```
+```{r}
+w<-aggregate(PositiveSentiment ~ Contact + Norms, FUN = sum, data=contact)
+n<-aggregate(PositiveSentiment ~ Contact + Norms, FUN = length, data=contact)
+(Contact<-data.frame(Contact=w$Contact, Norms=w$Norms, Y=w$PositiveSentiment, 
+  Obs.=n[,3], p=w$PositiveSentiment/n[,3]))
+summary(Model<-glm(Y/Obs. ~ Contact + Norms, weights = Obs., 
+  family=binomial(link=logit), data=Contact))
+```  
+In logistic regression, the "residual" of a single outcome is not very informative because of its Bernoulli nature -- the dichotomous prediction is always either off by 1, or a bullseye. Therefore it is more useful to assess the model predictions binomially. One way to do this is by looking at the difference between the observed and predicted proportions of success of each covariate pattern. We will do that now, calculating both the Pearson residual and the Deviance residual for the model containing Contact and Norms:
+```{r include=FALSE}
+#resid(glmobject) automatically reports the deviance residuals!!! google deviance residuals R!!!!
+```
+```{r}
+Contact$phat<-fitted.values(Model)
+Contact$yhat<-with(Contact,Obs.*phat)
+Contact$PearsonRes<-with(Contact,(Y-yhat)/sqrt(yhat*(1-phat)))
+Contact$DevianceRes<-with(Contact, sign(Y-yhat)*sqrt(2)*sqrt(Y*log(Y/yhat)+(Obs.-Y)*log((Obs.-Y)/(Obs.-yhat))))
+Contact            
+```
+The columns of residuals suggest a reasonably good fit. None of the individual residuals is anywhere near 1.96 standard deviations in magnitude.
+
+## 2. Effects of Variable Centering: Simulation
+```{r}
+n <- 50
+G <- c(rep(1,20),rep(0,30))
+x <- vector(); for(i in 1:n) {xi <- i/n; x <- c(x,xi)}; rm(xi)
+X <- cbind(rep(1,n),G,x)
+B <- c(-0.9, 0.3, 1)
+logodds <- X[,1]*B[1] + X[,2]*B[2] + X[,3]*B[3]
+p <- exp(logodds)/(1+exp(logodds))
+N <- 300
+
+# With x NOT centered:
+MLEs <- data.frame()
+for (i in 1:N){
+  U <- runif(n)
+  y <- as.numeric(p > U)
+  model <- glm(y ~ G+x, family=binomial(link=logit))
+  MLEs <- rbind(MLEs, t(coef(model)))
+};rm(model,y,U); names(MLEs)<-c("B0","B1","B2")
+#Look at the MLEs:
+sapply(MLEs, mean);cat("\n B2B0 correlation:\n");with(MLEs,cor(B2,B0))
+
+#With x CENTERED:
+x2 <- x-mean(x)
+X2 <- cbind(rep(1,n),G,x2)
+logodds2 <- X2[,1]*B[1] + X2[,2]*B[2] + X2[,3]*B[3]
+p2 <- exp(logodds)/(1+exp(logodds))
+MLEs.2 <- data.frame()
+for (i in 1:N){
+  U <- runif(n)
+  y <- as.numeric(p2 > U)
+  model <- glm(y ~ G+x2, family=binomial(link=logit))
+  MLEs.2 <- rbind(MLEs.2, t(coef(model)))
+};rm(model,y,U); names(MLEs.2)<-c("B0","B1","B2")
+#Look at the MLEs:
+sapply(MLEs.2, mean);cat("\n B2B0 correlation:\n");with(MLEs.2,cor(B2,B0))
+
+library(ggplot2)
+(scatter1<-ggplot(data=MLEs, aes(x=B2, y=B0)) +
+  geom_point(aes(y=B0,x=B2)) +
+  ggtitle("With x not centered"))
+(scatter2<-ggplot(data=MLEs.2, aes(x=B2, y=B0)) +
+  geom_point(aes(y=B0,x=B2)) +
+  ggtitle("With x centered around its mean"))
+```
+
+It's to be expected that a continuous covariate with a systematic effect on the outcome has some degree of correlation with the constant term. However, part of that correlation can be eliminated by centering the continuous covariate around its mean, as illustrated by the dotcharts.
+
+## 3. Conditional Logistic Regression for Matched-Pairs Case Control Data
+
+We'll now investigate what factors might be associated with low birth weight in newborns. The data comes in matched-pairs case-control format, so we'll use conditional logit to neutralize the stratum-specific effects. The measured covariates available are:
+
+1. Race (polytomous: 1=white, 2=black, 3=other)
+2. Smoking during pregnancy (dichotomous)
+3. PTD: history of premature labor (dichotomous)
+4. HT: History of hypertension (dichotomous)
+5. UI: Intrauterine Irritability (dichotomous)
+
+I began the analysis by entering the aforementioned 5 variables plus every conceivable two-way interaction term. Many interactions could not be analyzed because data was too sparse, or there were singularities. Of those interactions that could be analyzed, however, none was statistically significant. We can thus proceed to analyzing a model with main effects only:
+
+```{r}
+library(survival)
+lowbw <- read.table(file=choose.files(),sep=";",header=T)
+names(lowbw)
+names(lowbw)[1]<-"PAIR"
+lowbw$RACE <- as.factor(lowbw$RACE)
+levels(lowbw$RACE) <- c("WHITE","BLACK","OTHER")
+summary(bw1 <- clogit(LOW ~ RACE + SMOKE + PTD + HT + UI + strata(PAIR), data = lowbw))
+
+```
+Race is about to be dropped from the model. We'll verify this through a comparison of nested models:
+
+```{r}
+bw2 <- clogit(LOW ~ SMOKE + PTD + HT + UI + strata(PAIR), data = lowbw)
+summary(bw2)
+anova(bw1,bw2,test = "Chisq")
+```
+Yep, dropping RACE did not significantly worsen the fit, and it made the model more parsimonious:
+```{r}
+summary(bw2)
+```
+All the remaining variables are significant. Intrauterine irritability has a p-value on the borderline of significance, but we'll keep it in the model. Newborn babies' health is at stake here, so it's prudent to be cautious and attentive of any suspicious factors, even if they they're 2.7 per mille above the significance threshold. 
+
+# 4. Predicting Membership in Drug User Database Hilmo
+We'll now use a logit model to try to model the probability that someone is a drug user. Unfortunately the data file is not in a format that is immediately usable by R, so we have to edit it a little before importing: 
+```{r}
+orig.file<-scan(what="char",file="drug-users.txt",sep="\n")
+head(orig.file,10)
+library(stringr)
+drug<-str_replace_all(orig.file[7:length(orig.file)],"^ +","")
+drug<-str_replace_all(drug," +","\t")
+drug<-str_replace_all(drug,"\t(?=$)",""); cat(drug,file="drug.txt",sep="\n")
+drug<-read.table(file="drug.txt",sep="\t",header=T)
+```
+We also have to convert the relationship status variable into categorical:
+
+```{r}
+drug$sta<-as.factor(drug$sta); levels(drug$sta)
+(levels(drug$sta)<-c("HasPartner","Single","Widowed","Divorced","N/A"))
+```
+
+There are two drug users databases that the users be registered in -- _hilmo_ and _riki_. We'll take those registered in _riki_, and we'll model the probability that they also belong to hilmo as a function of their age, sex, and relationship status. I began by analyzing the main effects plus all two-way interactions (not shown). The latter proved totally non-significant so they were dropped. Next we'll analyze the main effects only :
+
+```{r include=FALSE}
+d0<-drug[drug$riki==1,]
+head(d0,10)
+summary(drugmodel0<-glm(hilmo ~ age*male + male*sta, family=binomial(link=logit), data=d0))
+```  
+```{r}
+summary(drugmodel1<-glm(hilmo ~ age + male + sta, family=binomial(link=logit), data=d0))
+```
+Age has a very strong negative association with being registered in hilmo, while being widowed has a very strong positive association. Maleness is also negatively associated, though the effect is not statistically significant. Let's try breaking age into cohorts at 10-year intervals to ascertain that the effect is linear. 
+
+```{r}
+summary(d0$age)
+hist(d0$age)
+d0$ageOrd<-cut(d0$age,breaks=c(seq(from=15,to=55,by=10)),include.lowest = TRUE)
+table(d0$ageOrd)
+#DISABLED LINEd0$ageCentered<-d0$age-mean(d0$age)
+summary(drugmodel2<-glm(hilmo ~ ageOrd + male + sta, family=binomial(link=logit), data=d0))
+#DISABLED LINEsummary(drugmodel3<-glm(hilmo ~ ageCentered + male + sta, family=binomial(link=logit), data=d0))
+#DISABLED LINEsummary(drugmodel4<-glm(hilmo ~ age + sta, family=binomial(link=logit), data=d0))
+```
+The effect of age does indeed seem mostly linear. It's not completely consistent, but the oldest age group also has by far the smallest sample size, which might have something to do with it. The fit worsened slightly as a result of transforming the variable (Residual deviance and AIC went up) so the model where age is continuous is likely the better one. Technically (based on p-values), the gender variable could be dropped, but that would be blind allegiance to the Cult of Statistical Significance, so refrain from doing so. Finally, we'll store the fitted probabilities yielded by our model:  
+
+```{r}
+head(d0$FittedProbs <- fitted.values(drugmodel1))
+```  
+
+# 5. Predicting Membership in Drug User Database Riki
+Now we'll perform a similar analysis in the other direction, trying to predict whether those registered in _hilmo_ are also registered in _riki_. We'll begin with a model containing all the main effects and two-way interactions again:  
+
+```{r}
+d1<-drug[drug$hilmo==1,]
+summary(DrugModel0<-glm(riki ~ age*male + male*sta, family=binomial(link=logit), data=d1))
+```
+The interaction terms aren't significant, so we'll drop them:
+
+```{r}
+summary(DrugModel1<-glm(riki ~ age + male + sta, family=binomial(link=logit), data=d1))
+```
+The results are very similar to those obtained with riki. The difference is that the effect of age seems sharper here, while the respective effects of widowhood and maleness are less pronounced. Let's try breaking age into cohorts:
+
+```{r}
+summary(d1$age)
+hist(d1$age)
+d1$ageOrd<-cut(d1$age,breaks=seq(from=15,to=55,by=10),include.lowest = TRUE)
+table(d1$ageOrd)
+summary(DrugModel2<-glm(riki ~ ageOrd + male + sta, family=binomial(link=logit), data=d1))
+```
+Nothing surprising here either, and the fit worsened slightly. Age is better kept continuous.  
+
+The effect of being male is less significant in this dataset than the previous one. Here are some statistics on the effect of dropping it from the model.
+
+```{r}
+DrugModel3<-glm(riki ~ age + sta, family=binomial(link=logit), data=d1)
+anova(DrugModel1,DrugModel3,test="Chisq")
+data.frame(DrugModel1$aic,DrugModel3$aic)
+library(boot)
+ErrorRate<-function(Y,prob){mean(abs(Y-prob)>0.5)} #Define Error Rate
+data.frame(DrugModel1.TestingError = cv.glm(data=d1, glmfit=DrugModel1, cost=ErrorRate)$delta[1],
+  DrugModel3.TestingError = cv.glm(data=d1, glmfit=DrugModel3, cost=ErrorRate)$delta[1])
+```
+It's a tough call whether to keep the variable in the model or not. AIC improves by dropping it, and the increase in residual deviance is not statistically significant, but it's still a drop. The predictive power of the model in cross-validation does not change at all. I guess we'll drop the variable and choose the more parsimonious model. Finally, we'll store the model-fitted probabilities in the data frame:
+```{r}
+head(d1$FittedProbs<-fitted.values(DrugModel3))
+```
+# 6. The Horvitz-Thompson Estimator
+First we'll use our two models to calculate the respective fitted probabilities of belonging to hilmo and riki, for the entire drug user dataset:
+```{r}
+drug$p1 <- predict(object=drugmodel1, newdata=drug, type="response")
+drug$p2 <- predict(object=DrugModel3, newdata=drug, type="response")
+```
+Houston, we have a problem. The full dataset has one relationship status category that's entirely absent from the hilmo dataset.
+
+```{r}
+drug[which(drug$sta=="N/A"),]
+```
+
+Lacking a coefficient for the "N/A" relationship status, the hilmo model doesn't know what to do with this observation. Now what? I don't think there's a good solution. What I'll do is take the coefficient for that category in the riki logit model, and use that coefficient in calculating the probability for the single individual with "N/A" relationship status manually. At least this is a guess based on a real model, which in turn is based on a real dataset that's quite similar to the one in question.
+
+```{r}
+drug$p2<-"DunnoYet"
+drug$p2[1:97]<-predict(object=DrugModel3, newdata=drug[1:97,], type="response")
+drug$p2[99:2593]<-predict(object=DrugModel3, newdata=drug[99:2593,], type="response")
+coef(DrugModel3)
+coef(drugmodel1)["staN/A"]
+drug[98,]
+drug$p2[98]<-exp(-1.29420220 + -0.05295931*46 + -10.21317)/(1+exp(-1.29420220 + -0.05295931*46 + -10.21317))
+drug$p2<-as.numeric(drug$p2)
+```  
+Now the probability of being registered in at least one database:  
+```{r}
+P<-1532309
+drug$p.either<-(drug$p1+drug$p2)-drug$p1*drug$p2
+drug$y<-1
+```
+
+***
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
