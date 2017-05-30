@@ -100,12 +100,12 @@ for (i in 1:N0){
   lreg<-glm(Y~G+x,family=binomial)
   B0[i,]<-coef(lreg)
 }
+plot(B0[,1],B0[,3])
 summary(B0)
 hist(B0[,1])
 hist(B0[,2])
 hist(B0[,3])
 plot(B0[,1],B0[,2])
-plot(B0[,1],B0[,3])
 plot(B0[,2],B0[,3])
 
 #jatkuvat selittäjämuuttujat kannattaa ehkä keskistää. koska muuten se voi alkaa "korreloida" vakiotermin kanssa niin että ne kompensoivat toisiaan.
@@ -130,9 +130,9 @@ for (i in 1:N0){
   B0[i,]<-coef(lreg)
 }
 summary(B0)
+plot(B0[,1],B0[,3])
 hist(B0[,1])
 hist(B0[,2])
 hist(B0[,3])
 plot(B0[,1],B0[,2])
-plot(B0[,1],B0[,3])
 plot(B0[,2],B0[,2])

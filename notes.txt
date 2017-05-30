@@ -188,12 +188,27 @@ eikä clogitkaan kuulemma toimi jos "pareissa" on yli 1+1 tyyppiä.
 
 ne glm():n residuaalit ovat kuulemma chi squared aina.  eli siten että kun käsketään 1-pchisq(deviance,df)   niin suuri p-arvo kertoo hyvästä mallista. Myös tilastollisen merkitsevyyden nollamallin ja sovitetun mallin välillä voi laskea tekemällä 1-pchisq(devianssienerotus,df:ienerotus)
 
+resid(glmobject) automatically reports the deviance residuals!!! google deviance residuals R!!!!
 
+both likelihood ratio and pearson residuals follow the chi-squared distribution with large n Agresti intro 36.
 
+Agresti intro 87 to test the leverage of a particular observation in the model, one can try fitting the model with that observation deleted.
 
+HEII MUISTA JUKUPLIUT ETTÄ VAIKKA GLM() EI SUORAAN OSAISI, NIIN VOIT TESTATA _PELKÄN INTERAKTION_ (ILMAN YKSITTÄISIÄ TERMEJÄ) TEKEMÄLLÄ INTERAKTIOLLE UUDEN MUUTTUJAN as.numeric(male=0 & sta="Widowed") !!! Muista myös, että kyllä glm() osaa. interaktio on vain syöttettävä muodoss x1:x2.  jos laittaa x1*x2 niin se ottaa sekä yksittäiset että interaktion.
 
+ggplot(d0[d0$hilmo==0&d0$male==1,], aes(x=age))+geom_histogram(binwidth=0.5)+scale_x_continuous(breaks=seq(15,55),minor_breaks = NULL)+theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8)) <- tätä koodia väännettiin niin kauan että olkoon tässä tallessa.
 
+ggplot(EVPs, aes(x=pattern)) + geom_col(aes(y=theta)) +  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8)) peruspylväät
 
+predict-komennolle kun antaa argumentin se.fit=T niin se outputtaa kullekin arviolle myös keskivirheen. sen kun sitten plusmiinustaa laskettuun todennäköisyyteen 1.96 kertoimen kanssa niin saadaan todennäköisyysarviolle luottamusväli.
+
+cochran mantel haenzelin odds ratio parempi kuin logistisen regression odds jos on pieniä sämplejä. logregr kuulemma beta lähestää 2beetaa jos on vain vähän dataa. agresti CDA 229.
+
+agresti intro enmuistamissä sanoi että deviance residual parempi kuin pearson residual koska ottaa enemmän asioita huomioon. sitten se standardized myös hyvä,  mutta sitä en vielä hallitse.
+
+agresti intro enmuistamissä sanoi että logistisen regression logit-estimaatin keskivirhe lasketaan sen perusteella, kuinka käyrä uskottavuusfunktio on kyseisessä kohdassa. mitä käyrempi sitä pienempi keskivirhe. tärkeä tieto!!
+
+agresti intro 5 sanoo että binomi (Varmana myös multinomi)jakaumaa voidaan approksimoida normaaliaproksimaatiolla aina, kun KAIKKIEN lopputulosten odotettu frekvenssi on ainakin noin 5. silloin toimii kiin neliö.
 
 
 

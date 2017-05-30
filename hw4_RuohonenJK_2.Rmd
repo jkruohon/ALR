@@ -239,8 +239,7 @@ Now we'll perform a similar analysis in the other direction, trying to predict w
 ```{r}
 d1<-drug[drug$hilmo==1,]; row.names(d1)<-1:nrow(d1)
 d1$ageCentered<-d1$age-mean(d1$age)
-summary(DrugModel0<-glm(riki ~ ageCentered*male + male*sta +ageCentered*sta, 
-  family=binomial(link=logit), data=d1))
+summary(DrugModel0<-glm(riki ~ ageCentered*male + male*sta +ageCentered*sta, family=binomial(link=logit), data=d1))
 ```  
 
 None of the interaction terms is significant, and the whole model is quite confusing to interpret. We'll drop the interactions:
@@ -278,7 +277,7 @@ d1$sta.3way <- relevel(d1$sta.3way, "Single/Divorced")
 summary(DrugModel4<-glm(riki~AgeUnder33+male+sta.3way,family=binomial(link=logit),data=d1))
 anova(DrugModel3,DrugModel4,test="LRT")
 ```
-The chi-square statistic for the increase in deviance is only .77 at 1 degree of freedom, which supports our decision to drop the variable.
+The chi-square statistic for the increase in deviance is only .77 at 1 degree of freedom, which supports our decision to trim the variable.
 
 We now face a decision regarding the gender variable. It is not having the same effect as in the _riki_ dataset. Let's try dropping it:  
 
@@ -306,7 +305,7 @@ ModelCandidates<-rbind(ModelCandidates,
   cost=ErrorRate)$delta[1],AIC=DrugModel6$aic,BIC=BIC(DrugModel6),DevianceRes=DrugModel6$deviance))
 ModelCandidates
 ```
-P-value for removing the indicator is .11. Though not statistically significant, I find this uncomfortably low. AIC also deteriorates. BIC improves, but deviance jumps by 2.5 points. Testing error rates are identical. This evidence is very inconclusive. Before deciding, let's check what happens if we remove the widowhood indicator instead, and keep the dummy for having a partner. 
+P-value for removing the indicator is .11. Though not statistically significant, I find this unsettlingly low. AIC also deteriorates. BIC improves, but deviance jumps by 2.5 points. Testing error rates are identical. This evidence is very inconclusive. Before deciding, let's check what happens if we remove the widowhood indicator instead, and keep the dummy for having a partner. 
 
 ```{r}
 d1$HasPartner<-as.numeric(d1$sta.3way=="HasPartner")
@@ -352,14 +351,11 @@ Again the odds ratio between women and men is infinite. Based on this (very limi
 ```{r}
 d1$fem.widow<-as.numeric(d1$male==0 & d1$Widowed)
 summary(DrugModel8<-glm(riki~AgeUnder33+HasPartner+fem.widow,family=binomial,data=d1))
-ModelCandidates<-rbind(ModelCandidates,
+(ModelCandidates<-rbind(ModelCandidates,
   "AgeUnder33+HasPartner+fem.widow"=c(TestingErrorCV=cv.glm(data=d1,glmfit=DrugModel8,
-  cost=ErrorRate)$delta[1],AIC=DrugModel8$aic,BIC=BIC(DrugModel8),DevianceRes=DrugModel8$deviance))
-ModelCandidates[,2:4]
+  cost=ErrorRate)$delta[1],AIC=DrugModel8$aic,BIC=BIC(DrugModel8),DevianceRes=DrugModel8$deviance)))
 anova(DrugModel6b,DrugModel8,test="LRT")
 ```
-(Testing Error in crossvalidation remains identical for each model, so the column was left out to make the table fit within the page margins.)
-
 The improvement in fit that is achieved by adding the dummy for being a widow has a p-value of .10, so there's no clear-cut answer to whether its inclusion is justified. It is risky to include covariates whose predictive power is based on such tiny samples -- the reported effect could very well be due to mere chance. To illustrate, let's compare these three predictors by the extent to which they are influenced by single observations:
 
 ```{r}
@@ -375,13 +371,16 @@ summary(glm(riki~AgeUnder33+HasPartner+fem.widow,family=binomial,data=d1[c(-128,
 ```
 The MLE for AgeUnder33 stays virtually unchanged. HasPartner becomes more significant as its p-value decreases from .14 to .8 -- this is because the most influential observation is one that deviates from the general trend, so getting rid of it makes the trend more clear. The effect of the widow dummy, on the other hand, is based on a mere 2 success outcomes, thus it vanishes completely when we remove one of them.
 
-At the same time, the effect of being a widowed female has the same direction in both datasets -- a strong positive association. Our choice is whether to ignore this effect due to the small sample or to assume that the association seen in this meager sample is an indicator of a wider phenomenon of prematurely widowed women having an elevated risk of antisocial and self-destructive behavior.
+At the same time, the effect of being a widowed female has the same direction in both datasets -- a strong positive association. Our choice is whether to ignore this effect due to the small sample or to assume that the association seen in this meager sample is an indicator of a wider phenomenon of prematurely widowed women having an elevated risk of antisocial and self-destructive behavior. 
 
-I'll take the conservative road here, and leave fem.widow out of the model. While the p-value is impressive, it hinges on a single observation. There might well be a significant effect, but making confident claims based on this kind of sample size would be sloppy science. We'll choose DrugModel6b, with AgeUnder33 and HasPartner as the only predictors. It is a parsimonious model with two simple predictors that make intuitive sense and aren't based on an embarrassingly small sample. We will now use this model to calculate the probability of inclusion in _riki_ for everyone in the combined _drug_ dataset:
+I choose to "believe my data" here. Losing your husband/boyfriend to death at a young age is undoubtedly a traumatic experience, so it stands to reason that women having experienced it are more susceptible to problem behavior. There seems no particular reason to assume that the effect if due to chance alone. Therefore, the final model chosen to predict _riki_ membership is DrugModel8, containing AgeUnder33 and the dummies HasPartner and fem.widow. We'll now create these dummy variables for the combined _drug_ dataset, and then use the model to predict the probability of inclusion in _riki_ for every subject.
+
+
 
 ```{r}
 drug$HasPartner<-as.numeric(drug$sta=="HasPartner")
-drug$FittedRikiProbs<-predict(DrugModel6b, newdata=drug, type="response")
+drug$fem.widow<-as.numeric(drug$male==0 & drug$sta=="Widowed")
+drug$FittedRikiProbs<-predict(DrugModel8, newdata=drug, type="response")
 ```
 ```{r eval=FALSE, include=FALSE}
 d1$fem.widow<-as.numeric(d1$male==0 & d1$sta=="Widowed")
@@ -401,7 +400,7 @@ If we take a random sample from a population of unknown size, mark each subject 
 ```{r}
 names(drug)[which(names(drug)=="FittedHilmoProbs")]<-"p1"
 names(drug)[which(names(drug)=="FittedRikiProbs")]<-"p2"
-drug<-drug[,c(1:7,9,8,10)]
+#drug<-drug[,c(1,2,4,7,6,9,10,8,11)]
 ```
 For each of the 2593 subjects, the probability of being registered in either _hilmo_ or _riki_ is:
 
@@ -412,14 +411,14 @@ Here's a summary of _theta_:
 ```{r}
 summary(drug$theta)
 ```  
-Our two models rely on a combined total of 4 explanatory variables, all of which are dichotomous. In the _drug_ dataset, 12 different combinations of these variables occur. The following table lists the estimated $p1$, $p2$, and $theta$ for each combination:
+Our two models rely on a combined total of 5 explanatory variables, all of which are dichotomous. In the _drug_ dataset, 12 different combinations of these variables occur. The following table lists the estimated $p1$, $p2$, and $theta$ for each combination. I'll leave the fem.widow dummy out of this summary table to save space, because it is already implicitly included as the 0,1 combination of male and widowed:
 ```{r}
 EVPs.Bernoulli<-split(drug, list(drug$AgeUnder33,drug$Widowed,drug$male,drug$HasPartner),drop=TRUE)
 EVPs <- data.frame(); n<-vector()
 for(i in 1:length(EVPs.Bernoulli)){
-    EVPs <- rbind(EVPs,EVPs.Bernoulli[[i]][1,3:11]); n<-c(n,nrow(EVPs.Bernoulli[[i]]))}
+    EVPs <- rbind(EVPs,EVPs.Bernoulli[[i]][1,]); n<-c(n,nrow(EVPs.Bernoulli[[i]]))}
 EVPs$n<-n; row.names(EVPs)<-1:nrow(EVPs)
-EVPs<-EVPs[,c(5,2,4,6,7:10)]
+EVPs<-EVPs[,c(7,4,6,9,8,11:13)]
 round(EVPs,digits=6)
 ```  
 Let __u1 = age under 33, m1 = male, w1 = widowed, and h1 = has a partner__. The following plot illustrates the variation in $theta$ across covariate patterns:
@@ -430,17 +429,16 @@ EVPs<-cbind(pattern=c("u0m0w0h0","u1m0w0h0","u0m0w1h0","u1m0w1h0","u0m1w0h0",
 ggplot(EVPs, aes(x=pattern)) + geom_col(aes(y=theta)) + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12)) +
   geom_text(aes(y=theta,label=n), vjust=1.5, colour="white") + 
-  scale_y_continuous(breaks = 1:6/10) +
   ggtitle("Probability of inclusion in at least one drug user database,\n by covariate pattern",
   subtitle="N = 2593")
 ```
-The right side of the plot represents those under 33. The left side are the older people. In both age groups, it is the widowed women followed by the widowed men who have the highest probability of inclusion. We can also see how low $n$ is in these four groups.
+The right side of the plot represents those under 33. The left side are the older people. In both age groups, it is the widowed women followed by the widowed men who have the highest estimated probability of inclusion. We can also see how low $n$ is in each of these four groups. 
 
 Finally, we'll calculate the Horvitz-Thompson estimate of the population total of drug users in Uusimaa around 2000. It is the sum over the inverse inclusion probabilities (thetas) of each subject in the full dataset:
 
 ```{r}
 (Horvitz.Thompson <- sum(1/drug$theta))
 ```
-Based on the probability estimates yielded by our models, there were a little under 19,000 drug users in Uusimaa at the turn of the century.
+Based on the probability estimates yielded by our models, there were approximately 19,000 drug users in Uusimaa at the turn of the century.
 
 ***
